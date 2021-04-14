@@ -123,9 +123,10 @@ def set_terminal_args(*args):
 
 class OpenAnyTerminalShortcutProvider(GObject.GObject, Nautilus.LocationWidgetProvider):
     def __init__(self):
-        source = Gio.SettingsSchemaSource.get_default()
-        if source.lookup(GSETTINGS_PATH, True):
-            self._gsettings = Gio.Settings.new(GSETTINGS_PATH)
+        source = Gio.SettingsSchemaSource.new_from_directory("@gsettings_path@", Gio.SettingsSchemaSource.get_default(), True)
+        if True:
+            _schema = source.lookup(GSETTINGS_PATH, False)
+            self._gsettings = Settings.new_full(_schema, None, None);
             self._gsettings.connect("changed", self._bind_shortcut)
             self._create_accel_group()
         self._window = None
@@ -230,9 +231,10 @@ class OpenAnyTerminalExtension(GObject.GObject, Nautilus.MenuProvider):
         return items
 
 
-source = Gio.SettingsSchemaSource.get_default()
-if source is not None and source.lookup(GSETTINGS_PATH, True):
-    _gsettings = Gio.Settings.new(GSETTINGS_PATH)
+source = Gio.SettingsSchemaSource.new_from_directory("@gsettings_path@", Gio.SettingsSchemaSource.get_default(), True)
+if True:
+    _schema = source.lookup(GSETTINGS_PATH, False)
+    _gsettings = Settings.new_full(_schema, None, None);
     _gsettings.connect("changed", set_terminal_args)
     value = _gsettings.get_string(GSETTINGS_TERMINAL)
     if value in TERM_PARAMS:
